@@ -1,27 +1,23 @@
 package com.bank.bankeventnotifier.consumer;
 
+import com.bank.bankeventnotifier.config.RabbitMQConfig;
 import com.bank.bankeventnotifier.model.TransactionEvent;
-import com.bank.bankeventnotifier.service.ProcessingResultStore;
+import com.bank.bankeventnotifier.store.ResultStore;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
 @Service
 public class NotificationConsumer {
 
-    private final ProcessingResultStore store;
+    private final ResultStore resultStore;
 
-    public NotificationConsumer(ProcessingResultStore store) {
-        this.store = store;
+    public NotificationConsumer(ResultStore resultStore) {
+        this.resultStore = resultStore;
     }
 
-    @RabbitListener(queues = "notification-queue")
+    @RabbitListener(queues = RabbitMQConfig.NOTIFICATION_QUEUE)
     public void receive(TransactionEvent event) {
-
-        String msg = "Email sent for txn " + event.getTransactionId()
-                + " amount " + event.getAmount();
-
-        System.out.println(msg);
-
-        store.addResult(event.getTransactionId(), "notification", msg);
+        resultStore.save(event.getTransactionId(), "notification",
+                "Notification sent for " + event.getTransactionId());
     }
 }

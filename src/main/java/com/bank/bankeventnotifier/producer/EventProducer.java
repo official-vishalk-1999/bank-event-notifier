@@ -1,5 +1,6 @@
-package com.bank.bankeventnotifier.service;
+package com.bank.bankeventnotifier.producer;
 
+import com.bank.bankeventnotifier.config.RabbitMQConfig;
 import com.bank.bankeventnotifier.model.TransactionEvent;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
@@ -13,11 +14,8 @@ public class EventProducer {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void sendMessage(TransactionEvent event) {
-
-        System.out.println("Sending transaction: " + event.getTransactionId());
-
-        rabbitTemplate.convertAndSend("bank-exchange", "routing.notification", event);
-        rabbitTemplate.convertAndSend("bank-exchange", "routing.fraud", event);
+    public void publish(TransactionEvent event) {
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.NOTIFICATION_KEY, event);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.FRAUD_KEY, event);
     }
 }

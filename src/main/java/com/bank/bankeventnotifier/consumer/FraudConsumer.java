@@ -1,26 +1,23 @@
 package com.bank.bankeventnotifier.consumer;
 
+import com.bank.bankeventnotifier.config.RabbitMQConfig;
 import com.bank.bankeventnotifier.model.TransactionEvent;
-import com.bank.bankeventnotifier.service.ProcessingResultStore;
+import com.bank.bankeventnotifier.store.ResultStore;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
 @Service
 public class FraudConsumer {
 
-    private final ProcessingResultStore store;
+    private final ResultStore resultStore;
 
-    public FraudConsumer(ProcessingResultStore store) {
-        this.store = store;
+    public FraudConsumer(ResultStore resultStore) {
+        this.resultStore = resultStore;
     }
 
-    @RabbitListener(queues = "fraud-queue")
+    @RabbitListener(queues = RabbitMQConfig.FRAUD_QUEUE)
     public void receive(TransactionEvent event) {
-
-        String msg = "Fraud check completed for txn " + event.getTransactionId();
-
-        System.out.println(msg);
-
-        store.addResult(event.getTransactionId(), "fraud", msg);
+        resultStore.save(event.getTransactionId(), "fraud",
+                "Fraud check done for " + event.getTransactionId());
     }
 }

@@ -13,9 +13,8 @@ public class RabbitMQConfig {
     public static final String EXCHANGE = "bank-exchange";
     public static final String NOTIFICATION_QUEUE = "notification-queue";
     public static final String FRAUD_QUEUE = "fraud-queue";
-
-    public static final String ROUTING_KEY_NOTIFICATION = "routing.notification";
-    public static final String ROUTING_KEY_FRAUD = "routing.fraud";
+    public static final String NOTIFICATION_KEY = "route.notification";
+    public static final String FRAUD_KEY = "route.fraud";
 
     @Bean
     public DirectExchange exchange() {
@@ -34,29 +33,23 @@ public class RabbitMQConfig {
 
     @Bean
     public Binding notificationBinding() {
-        return BindingBuilder
-                .bind(notificationQueue())
-                .to(exchange())
-                .with(ROUTING_KEY_NOTIFICATION);
+        return BindingBuilder.bind(notificationQueue()).to(exchange()).with(NOTIFICATION_KEY);
     }
 
     @Bean
     public Binding fraudBinding() {
-        return BindingBuilder
-                .bind(fraudQueue())
-                .to(exchange())
-                .with(ROUTING_KEY_FRAUD);
+        return BindingBuilder.bind(fraudQueue()).to(exchange()).with(FRAUD_KEY);
     }
 
     @Bean
-    public Jackson2JsonMessageConverter messageConverter() {
+    public Jackson2JsonMessageConverter converter() {
         return new Jackson2JsonMessageConverter();
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
-        RabbitTemplate template = new RabbitTemplate(connectionFactory);
-        template.setMessageConverter(messageConverter());
+    public RabbitTemplate rabbitTemplate(ConnectionFactory factory) {
+        RabbitTemplate template = new RabbitTemplate(factory);
+        template.setMessageConverter(converter());
         return template;
     }
 }

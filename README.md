@@ -8,7 +8,6 @@ A banking transaction notification system built with RabbitMQ. When a transactio
 
 - Spring Boot, Java 17
 - RabbitMQ (AMQP)
-- Thymeleaf (frontend)
 
 ---
 
