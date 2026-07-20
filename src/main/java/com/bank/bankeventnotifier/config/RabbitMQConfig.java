@@ -13,8 +13,8 @@ public class RabbitMQConfig {
     public static final String EXCHANGE = "bank-exchange";
     public static final String NOTIFICATION_QUEUE = "notification-queue";
     public static final String FRAUD_QUEUE = "fraud-queue";
-    public static final String NOTIFICATION_KEY = "route.notification";
-    public static final String FRAUD_KEY = "route.fraud";
+
+    public static final String TRANSACTION_KEY = "route.transaction";
 
     @Bean
     public DirectExchange exchange() {
@@ -33,12 +33,12 @@ public class RabbitMQConfig {
 
     @Bean
     public Binding notificationBinding() {
-        return BindingBuilder.bind(notificationQueue()).to(exchange()).with(NOTIFICATION_KEY);
+        return BindingBuilder.bind(notificationQueue()).to(exchange()).with(TRANSACTION_KEY);
     }
 
     @Bean
     public Binding fraudBinding() {
-        return BindingBuilder.bind(fraudQueue()).to(exchange()).with(FRAUD_KEY);
+        return BindingBuilder.bind(fraudQueue()).to(exchange()).with(TRANSACTION_KEY);
     }
 
     @Bean
