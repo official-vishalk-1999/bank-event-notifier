@@ -15,7 +15,6 @@ public class EventProducer {
     }
 
     public void publish(TransactionEvent event) {
-        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.NOTIFICATION_KEY, event);
-        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.FRAUD_KEY, event);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.TRANSACTION_KEY, event);
     }
 }
